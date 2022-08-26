@@ -10,8 +10,8 @@ if id<0 error("could not open input file"); end
 FITheader = readFITheader(id);
 messages = {};
 data = NaN*zeros(256,1);
-while !feof(id)
-%for n=1:15
+%while !feof(id)
+for n=1:2
   clear record;
   record.header = fread(id, 1);
   if bitand(record.header, 128)
@@ -27,8 +27,10 @@ while !feof(id)
   else
     msgID = bitand(record.header, 15);
     record = messages{msgID+1};
-    if 0
-      [dummy,recSize] = fread(id, sum(record.fieldSize)); % skip record content
+    if 1
+      for f=1:record.fields
+        [dummy,recSize] = fread(id, record.field(f).fieldSize); % skip record content
+      end
     else
       totalDone = 0;
       filePos = ftell(id);
@@ -100,9 +102,15 @@ while !feof(id)
       fseek(id, filePos+sum(record.fieldSize)); % ensure to go on correct
     end
 
-    [dummy,devSize] = fread(id, sum(record.devSize)); % skip developer content
+%    [dummy,devSize] = fread(id, sum(record.devSize)); % skip developer content
+    if record.devFields>0
+      for f=1:record.devFields
+        [dummy,recSize] = fread(id, record.devField(f).fieldSize); % skip record content
+      end
+    end
+
     if !feof(id) % eof will occour while reading CRC instead
-      disp(["data " num2str(msgID) ",length " num2str(sum(record.fieldSize)+sum(record.devSize))]);
+      disp(["data " num2str(msgID)]);
     end
     % 0 lat
     % 1 lon
