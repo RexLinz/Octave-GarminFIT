@@ -1,6 +1,6 @@
 % read data from CSV exported using JAVA conversion tool
 
-switch 2
+switch 0
   case 0
     filename = "C8BD3920.csv"; % Surf Markus 11.08.2022, 13:39-14:02
   case 1
