@@ -4,7 +4,7 @@
 
 clear
 
-switch 3
+switch 2
   case 0
     filename = "C8BD3920.fit"; % Surf Markus 11.08.2022, 13:39-14:02
   case 1
@@ -22,7 +22,7 @@ id = fopen(filename,"rb");
 if id<0 error("could not open input file"); end
 
 FITheader = readFITheader(id);
-messages = {};
+message = {};
 
 N = 3600; n = 0;
 t = NaN*zeros(N,1); % seconds since 01.01.1990
@@ -44,11 +44,11 @@ while !feof(id)
     disp(["definition " num2str(msgID)]);
     record = readFITdefinition(id, record);
     if !feof(id) % eof will occour while reading CRC instead
-      messages{msgID+1} = record;
+      message{msgID+1} = record;
     end
   else
     msgID = bitand(record.header, 15);
-    record = messages{msgID+1};
+    record = message{msgID+1};
     if record.messageNumber == 20 % parse "record" type only
 %      disp(["data " num2str(msgID) ", messageNumber=" num2str(record.messageNumber) ", fields=" num2str(record.fields)]);
       n = n+1;
@@ -57,7 +57,7 @@ while !feof(id)
         field = record.field(f);
         [temp, bytes] = readDataField(id, field);
         if length(temp)==1 % we expect just one value read
-          messages{msgID+1}.field(f).data(nData+1) = temp;
+          message{msgID+1}.field(f).data(nData+1) = temp;
           switch field.fieldNum
           case 0 % lat
             lat(n) = temp;
@@ -113,3 +113,14 @@ lat(r) = [];
 lon(r) = [];
 speed(r) = [];
 dist(r) = [];
+
+if 1
+  msgNum = 13;
+  t     = getData(message{msgNum}, "time");  % seconds from 01.01.1990
+  lat   = getData(message{msgNum}, "lat");   % deg
+  lon   = getData(message{msgNum}, "lon");   % deg
+  speed = getData(message{msgNum}, "speed"); % in m/s
+  dist  = getData(message{msgNum}, "dist");  % distance in m
+end
+
+showActivity;
