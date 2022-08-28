@@ -24,13 +24,6 @@ if id<0 error("could not open input file"); end
 FITheader = readFITheader(id);
 message = {};
 
-N = 3600; n = 0;
-t = NaN*zeros(N,1); % seconds since 01.01.1990
-lat = NaN*zeros(N,1);
-lon = NaN*zeros(N,1);
-speed = NaN*zeros(N,1);
-dist = NaN*zeros(N,1);
-
 while !feof(id)
 %for r=1:35
   clear record;
@@ -51,32 +44,12 @@ while !feof(id)
     record = message{msgID+1};
     if record.messageNumber == 20 % parse "record" type only
 %      disp(["data " num2str(msgID) ", messageNumber=" num2str(record.messageNumber) ", fields=" num2str(record.fields)]);
-      n = n+1;
       nData = length(record.field(1).data);
       for f = 1:record.fields
         field = record.field(f);
         [temp, bytes] = readDataField(id, field);
         if length(temp)==1 % we expect just one value read
           message{msgID+1}.field(f).data(nData+1) = temp;
-          switch field.fieldNum
-          case 0 % lat
-            lat(n) = temp;
-          case 1 % lon
-            lon(n) = temp;
-          case 5 % distance
-            dist(n) = temp;
-          case 6 % speed
-            speed(n) = temp;
-          case 253 % timestamp
-            t(n) = temp;
-          otherwise
-            % 2 altitude
-            % 3 heart rate
-            % 4 cadence
-            % 53 fractional cadence
-            % 87 unknown
-            % 88 unknown
-          end
         else
           error("multiple data read");
         end
@@ -98,29 +71,10 @@ end
 
 fclose(id);
 
-% cut data to length
-t = t(1:n);              % seconds from 01.01.1990
-lat = lat(1:n)/2^32*360; % to degrees
-lon = lon(1:n)/2^32*360; % to degrees
-speed = speed(1:n)/1000; % in m/s
-dist= dist(1:n)/100;     % distance in m
-
-% not all data records might hold lat/lon/...
-% remove them
-r = find(isnan(lat));
-t(r) = [];
-lat(r) = [];
-lon(r) = [];
-speed(r) = [];
-dist(r) = [];
-
-if 1
-  msgNum = 13;
-  t     = getData(message{msgNum}, "time");  % seconds from 01.01.1990
-  lat   = getData(message{msgNum}, "lat");   % deg
-  lon   = getData(message{msgNum}, "lon");   % deg
-  speed = getData(message{msgNum}, "speed"); % in m/s
-  dist  = getData(message{msgNum}, "dist");  % distance in m
-end
-
+msgNum = 13;
+t     = getData(message{msgNum}, "time");  % seconds from 01.01.1990
+lat   = getData(message{msgNum}, "lat");   % deg
+lon   = getData(message{msgNum}, "lon");   % deg
+speed = getData(message{msgNum}, "speed"); % in m/s
+dist  = getData(message{msgNum}, "dist");  % distance in m
 showActivity;
