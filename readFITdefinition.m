@@ -24,7 +24,6 @@ if bitand(record.header,32) % developer data present
     temp.fieldNum  = fread(id, 1);
     temp.fieldSize = fread(id, 1);
     temp.dataIndex = fread(id, 1);
-    temp.devData = [];
     record.devField = [record.devField temp];
   end
 else
