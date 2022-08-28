@@ -56,7 +56,6 @@ while !feof(id)
         field = record.field(f);
         [temp, bytes] = readDataField(id, field);
         if length(temp)==1 % we expect just one value read
-          data(field.fieldNum+1) = temp;
           switch field.fieldNum
           case 0 % lat
             lat(n) = temp;
