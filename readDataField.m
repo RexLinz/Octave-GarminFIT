@@ -33,8 +33,8 @@ switch field.baseType % binary representation
     bytesDone = 4;
   case 7
     % TODO null terminated string untested
-    data = char(fread(id, record.field(f).fieldSize, "uchar")');
-    bytesDone = record.field(f).fieldSize;
+    data = char(fread(id, field.fieldSize, "uchar")');
+    bytesDone = field.fieldSize;
   case 136 % 0x88
     data = fread(id, 1, "float"); % float
     % TODO invalid if binary representation is 0xFFFFFFFF
@@ -56,9 +56,9 @@ switch field.baseType % binary representation
 %    if data==0, data=NA; end
     bytesDone = 4;
   case 13
-    data = fread(id, record.field(f).fieldSize, "uint8"); % array of byte
+    data = fread(id, field.fieldSize, "uint8"); % array of byte
     % TODO invalid if byte is 0xFF
-    bytesDone = record.fieldSize(f);
+    bytesDone = field.fieldSize;
   case 142 % 0x8E
     data = fread(id, 1, "int64"); % int64
 %    if data==hex2dec("7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"), data=NA; end
@@ -72,7 +72,7 @@ switch field.baseType % binary representation
 %    if data==0, data=NA; end
     bytesDone = 8;
   otherwise
-    data = fread(id, record.field(f).fieldSize, "uint8"); % unknown type
+    data = fread(id, field.fieldSize, "uint8"); % unknown type
     warning(["unknown base type " num2str(field.baseType) " found"]);
 end
 if bytesDone != field.fieldSize
