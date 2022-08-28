@@ -4,15 +4,15 @@
 
 clear
 
-switch 0
-  case 0
-    filename = "C8BD3920.fit"; % Surf Markus 11.08.2022, 13:39-14:02
-  case 1
-    filename = "C8CA3219.fit"; % Surf Markus 12.08.2022, 10:32-12:07
-  case 2
-    filename = "7222065175_ACTIVITY.fit"; % Surf max. speed, 31.07.2021, 09:06
-  case 3
-    filename = "7256738576_ACTIVITY.fit"; % Surf 32,5 km, 06.08.2021, 14:27
+switch 1
+  case 0 % 11.08.2022, 13:39-14:02 / SUP (Surf Markus)
+    filename = "C8BD3920.fit";
+  case 1 % 12.08.2022, 10:32-12:07 / SUP (Surf Markus)
+    filename = "C8CA3219.fit";
+  case 2 % 31.07.2021, 09:06-09:54 / Surf max. speed
+    filename = "7222065175_ACTIVITY.fit";
+  case 3 % 06.08.2021, 14:27-16:06 / Surf 32,5 km
+    filename = "7256738576_ACTIVITY.fit";
   otherwise
     error("no data selected");
 end
@@ -74,11 +74,27 @@ fclose(id);
 
 % TODO merge messages holding respective data
 recMessages = findRecordMessages(message);
-msgNum = recMessages(end); % last
 
-t     = getRecordData(message{msgNum}, "time");  % seconds from 01.01.1990
-lat   = getRecordData(message{msgNum}, "lat");   % deg
-lon   = getRecordData(message{msgNum}, "lon");   % deg
-speed = getRecordData(message{msgNum}, "speed"); % in m/s
-dist  = getRecordData(message{msgNum}, "dist");  % distance in m
+t = [];
+lat = [];
+lon = [];
+speed = [];
+dist = [];
+for r=1:length(recMessages)
+  msgNum = recMessages(r);
+  if length(getRecordData(message{msgNum},"lat"))>0
+    t     = [t getRecordData(message{msgNum}, "time")];  % seconds from 01.01.1990
+    lat   = [lat getRecordData(message{msgNum}, "lat")];   % deg
+    lon   = [lon getRecordData(message{msgNum}, "lon")];   % deg
+    speed = [speed getRecordData(message{msgNum}, "speed")]; % in m/s
+    dist  = [dist getRecordData(message{msgNum}, "dist")];  % distance in m
+  end
+end
+% now sort all fields by timestamp
+[t i] = sort(t);
+lat   = lat(i);
+lon   = lon(i);
+speed = speed(i);
+dist  = dist(i);
+
 showActivity;
