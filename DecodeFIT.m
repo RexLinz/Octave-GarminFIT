@@ -4,7 +4,7 @@
 
 clear
 
-switch 2
+switch 1
   case 0
     filename = "C8BD3920.fit"; % Surf Markus 11.08.2022, 13:39-14:02
   case 1
@@ -16,7 +16,6 @@ switch 2
   otherwise
     error("no data selected");
 end
-
 
 id = fopen(filename,"rb");
 if id<0 error("could not open input file"); end
@@ -71,10 +70,13 @@ end
 
 fclose(id);
 
+% TODO find and merge messages holding respective data
+recMessages = findRecordMessages(message);
+
 msgNum = 13;
-t     = getData(message{msgNum}, "time");  % seconds from 01.01.1990
-lat   = getData(message{msgNum}, "lat");   % deg
-lon   = getData(message{msgNum}, "lon");   % deg
-speed = getData(message{msgNum}, "speed"); % in m/s
-dist  = getData(message{msgNum}, "dist");  % distance in m
+t     = getRecordData(message{msgNum}, "time");  % seconds from 01.01.1990
+lat   = getRecordData(message{msgNum}, "lat");   % deg
+lon   = getRecordData(message{msgNum}, "lon");   % deg
+speed = getRecordData(message{msgNum}, "speed"); % in m/s
+dist  = getRecordData(message{msgNum}, "dist");  % distance in m
 showActivity;

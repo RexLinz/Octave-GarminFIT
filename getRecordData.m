@@ -1,11 +1,11 @@
-function data = getData(record, name)
+function data = getRecordData(record, name)
 
-% function data = getData(record, name)
+% function data = getRecordData(record, name)
 % read named data from activity records (messageNumber=20)
 % accepted NAME values are lat, lon, alt, heart, cad, dist, speed,time
 % output is converted to useful units, e.g. deg, m, m/s, ...
 
-if record.messageNumber != 20
+if record.messageNumber != 20 % "record"
   error("expect messageNumber==20 (record)");
 end
 
