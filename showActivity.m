@@ -38,28 +38,28 @@ ylabel("y [m]");
 
 figure(2,"name","data");
 % speed
-a1 = subplot(4,1,1);
+a(1) = subplot(4,1,1);
 plot(tAct, speed);
 grid on;
 xlabel("t [s]");
 ylabel("v [m/s]");
 %
-a2 = subplot(4,1,2);
+a(2) = subplot(4,1,2);
 plot(tAct, 1./r);
 grid on;
 xlabel("t [s]");
 ylabel("1/r [1/m]");
 % heading
-a3 = subplot(4,1,3);
+a(3) = subplot(4,1,3);
 plot(tAct(2:end), rad2deg(heading));
 grid on;
 xlabel("t [s]");
 ylabel("heading [deg]");
 % heading change
-a4 = subplot(4,1,4);
+a(4) = subplot(4,1,4);
 plot(tAct(2:end-1), rad2deg(diff(unwrap(heading))));
 grid on;
 xlabel("t [s]");
 ylabel("heading change [delta deg]");
 
-linkaxes([a1 a2 a3 a4],'x');
+linkaxes(a,'x');
