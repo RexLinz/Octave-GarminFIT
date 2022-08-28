@@ -52,10 +52,12 @@ while !feof(id)
     if record.messageNumber == 20 % parse "record" type only
 %      disp(["data " num2str(msgID) ", messageNumber=" num2str(record.messageNumber) ", fields=" num2str(record.fields)]);
       n = n+1;
+      nData = length(record.field(1).data);
       for f = 1:record.fields
         field = record.field(f);
         [temp, bytes] = readDataField(id, field);
         if length(temp)==1 % we expect just one value read
+          messages{msgID+1}.field(f).data(nData+1) = temp;
           switch field.fieldNum
           case 0 % lat
             lat(n) = temp;
