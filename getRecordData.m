@@ -12,10 +12,10 @@ end
 switch name
   case "lat"
     fieldNum = 0;
-    scale = 2^32*360; % to deg
+    scale = 360/2^32; % to deg
   case "lon"
     fieldNum = 1;
-    scale = 2^32*360; % to deg
+    scale = 360/2^32; % to deg
   case "alt"
     fieldNum = 2;
     scale = 1;        % not known so far
@@ -27,10 +27,10 @@ switch name
     scale = 1;        % not known so far
   case "dist"
     fieldNum = 5;
-    scale = 100;      % to m
+    scale = 0.01;     % to m
   case "speed"
     fieldNum = 6;
-    scale = 1000;     % to m/s
+    scale = 0.001;    % to m/s
   % 53 fractional cadence
   % 87 unknown
   % 88 unknown
@@ -41,9 +41,10 @@ switch name
     error(["field " name " unknown"]);
 end
 
+data = [];
 for i=1:record.fields
   if record.field(i).fieldNum==fieldNum
-    data = record.field(i).data/scale;
+    data = record.field(i).data*scale;
     break;
   end
 end
