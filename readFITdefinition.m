@@ -19,7 +19,7 @@ if bitand(record.header,32) % developer data present
   record.devFields = fread(id, 1);
   record.devField  = [];
   clear temp;
-  for f = 1:record.fields
+  for f = 1:record.devFields
     temp.fieldNum  = fread(id, 1);
     temp.fieldSize = fread(id, 1);
     temp.dataIndex = fread(id, 1);
