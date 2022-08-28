@@ -23,7 +23,6 @@ if id<0 error("could not open input file"); end
 
 FITheader = readFITheader(id);
 messages = {};
-data = NaN*zeros(256,1);
 
 N = 3600; n = 0;
 t = NaN*zeros(N,1); % seconds since 01.01.1990
@@ -33,7 +32,7 @@ speed = NaN*zeros(N,1);
 dist = NaN*zeros(N,1);
 
 while !feof(id)
-%for n=1:35
+%for r=1:35
   clear record;
   record.header = fread(id, 1);
   if feof(id) break; end;
@@ -51,7 +50,7 @@ while !feof(id)
     msgID = bitand(record.header, 15);
     record = messages{msgID+1};
     if record.messageNumber == 20 % parse "record" type only
-      disp(["data " num2str(msgID) ", messageNumber=" num2str(record.messageNumber) ", fields=" num2str(record.fields)]);
+%      disp(["data " num2str(msgID) ", messageNumber=" num2str(record.messageNumber) ", fields=" num2str(record.fields)]);
       n = n+1;
       for f = 1:record.fields
         field = record.field(f);
