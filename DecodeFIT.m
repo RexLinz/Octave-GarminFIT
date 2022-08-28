@@ -4,7 +4,7 @@
 
 clear
 
-switch 1
+switch 0
   case 0
     filename = "C8BD3920.fit"; % Surf Markus 11.08.2022, 13:39-14:02
   case 1
@@ -33,32 +33,34 @@ while !feof(id)
     record = readFITtimestamp(id, record); % TODO (untested)
   elseif bitand(record.header, 64)
     msgID = bitand(record.header, 15);
-    disp(["definition " num2str(msgID)]);
     record = readFITdefinition(id, record);
     if !feof(id) % eof will occour while reading CRC instead
+      if (length(message)>=msgID+1) && (message{msgID+1}.header!=0)
+        disp(["redefinition of " num2str(msgID)]); % existing data will be lost
+      else
+%        disp(["definition " num2str(msgID)]);
+      end
       message{msgID+1} = record;
     end
   else
     msgID = bitand(record.header, 15);
     record = message{msgID+1};
-    if record.messageNumber == 20 % parse "record" type only
-%      disp(["data " num2str(msgID) ", messageNumber=" num2str(record.messageNumber) ", fields=" num2str(record.fields)]);
-      nData = length(record.field(1).data);
-      for f = 1:record.fields
-        field = record.field(f);
-        [temp, bytes] = readDataField(id, field);
+%    disp(["data " num2str(msgID) ", messageNumber=" num2str(record.messageNumber) ", fields=" num2str(record.fields)]);
+    nData = length(record.field(1).data);
+    for f = 1:record.fields
+      field = record.field(f);
+      [temp, bytes] = readDataField(id, field);
+      if feof(id)
+        break
+      else
         if length(temp)==1 % we expect just one value read
           message{msgID+1}.field(f).data(nData+1) = temp;
         else
-          error("multiple data read");
+          message{msgID+1}.field(f).data(nData+1) = temp(1);
+          warning("multiple data read");
         end
       end
-    else % not "record" type, skip content
-      for f=1:record.fields
-        [dummy,recSize] = fread(id, record.field(f).fieldSize);
-      end
     end
-
     % skip developer content if available
     if record.devFields>0
       for f=1:record.devFields
@@ -70,10 +72,10 @@ end
 
 fclose(id);
 
-% TODO find and merge messages holding respective data
+% TODO merge messages holding respective data
 recMessages = findRecordMessages(message);
+msgNum = recMessages(end); % last
 
-msgNum = 13;
 t     = getRecordData(message{msgNum}, "time");  % seconds from 01.01.1990
 lat   = getRecordData(message{msgNum}, "lat");   % deg
 lon   = getRecordData(message{msgNum}, "lon");   % deg
