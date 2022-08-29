@@ -1,3 +1,8 @@
+TODO
+move FIT read to function
+test other activities (walk, bike)?
+
+-------------------------------------------------------
 C8CA3219
 SUP Surf Markus
 12.08.2022, 10:32-12:07
