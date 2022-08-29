@@ -4,7 +4,7 @@
 
 clear
 
-switch 1
+switch 2
   case 0 % 11.08.2022, 13:39-14:02 / SUP (Surf Markus)
     filename = "C8BD3920.fit";
   case 1 % 12.08.2022, 10:32-12:07 / SUP (Surf Markus)
@@ -36,7 +36,9 @@ while !feof(id)
     record = readFITdefinition(id, record);
     if !feof(id) % eof will occour while reading CRC instead
       if (length(message)>=msgID+1) && (message{msgID+1}.header!=0)
-        disp(["redefinition of " num2str(msgID)]); % existing data will be lost
+        % redefinition of already used message, save backup at end of array
+        message{length(message)+1} = message{msgID+1};
+%        disp(["redefinition of " num2str(msgID)]);
       else
 %        disp(["definition " num2str(msgID)]);
       end
@@ -57,14 +59,14 @@ while !feof(id)
           message{msgID+1}.field(f).data(nData+1) = temp;
         else
           message{msgID+1}.field(f).data(nData+1) = temp(1);
-          warning("multiple data read");
+%          warning("multiple data read");
         end
       end
     end
     % skip developer content if available
     if record.devFields>0
       for f=1:record.devFields
-        [dummy,recSize] = fread(id, record.devField(f).fieldSize);
+        [~,recSize] = fread(id, record.devField(f).fieldSize);
       end
     end
   end
