@@ -21,9 +21,9 @@ dx = diff(x);
 dy = diff(y);
 heading = atan2(dy,dx);
 % remove points with dx and dy == 0
-%nh = find(dx==0 && dy==0);
-%heading(heading==0) = NaN; % workaround
-% heading = unwrap(heading);
+nh = find((dx==0) & (dy==0));
+heading(nh) = heading(nh-1); % keep heading
+deltaHeading = diff(unwrap(heading));
 
 figure(1,"name","xy plot");
 plot(
@@ -57,7 +57,7 @@ xlabel("t [s]");
 ylabel("heading [deg]");
 % heading change
 a(4) = subplot(4,1,4);
-plot(tAct(2:end-1), rad2deg(diff(unwrap(heading))));
+plot(tAct(2:end-1), rad2deg(deltaHeading));
 grid on;
 xlabel("t [s]");
 ylabel("heading change [delta deg]");
