@@ -31,9 +31,17 @@ switch field.baseType % binary representation
     data = fread(id, 1, "uint32"); % uint32
 %    if data==hex2dec("FFFFFFFF"), data=NA; end
     bytesDone = 4;
-  case 7
-    % TODO null terminated string untested
-    data = char(fread(id, field.fieldSize, "uchar")');
+  case 7 % null terminated string
+    data = fread(id, field.fieldSize, "uchar")';
+    % end at first NULL character (if any)
+    nullChar = min(find(data==0));
+    if isempty(nullChar)
+      string = char(data) % maximum length used
+    elseif nullChar>1
+        string = char(data(1:nullChar-1))
+    else
+        string = ""; % suppress empty strings
+    end
     bytesDone = field.fieldSize;
   case 136 % 0x88
     data = fread(id, 1, "float"); % float
@@ -76,7 +84,7 @@ switch field.baseType % binary representation
     warning(["unknown base type " num2str(field.baseType) " found"]);
 end
 if bytesDone != field.fieldSize
-  warning("data read has different size than expected");
+%  warning("data read has different size than expected");
   fseek(id, filePos+field.fieldSize); % ensure to go on correct
 end
 
