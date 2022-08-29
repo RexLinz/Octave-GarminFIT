@@ -74,22 +74,22 @@ end
 
 fclose(id);
 
-% TODO merge messages holding respective data
+% merge messages holding respective data
 recMessages = findRecordMessages(message);
 
-t = [];
-lat = [];
-lon = [];
+t     = [];
+lat   = [];
+lon   = [];
 speed = [];
-dist = [];
+dist  = [];
 for r=1:length(recMessages)
   msgNum = recMessages(r);
   if length(getRecordData(message{msgNum},"lat"))>0
-    t     = [t getRecordData(message{msgNum}, "time")];  % seconds from 01.01.1990
-    lat   = [lat getRecordData(message{msgNum}, "lat")];   % deg
-    lon   = [lon getRecordData(message{msgNum}, "lon")];   % deg
+    t     = [t     getRecordData(message{msgNum}, "time")];  % seconds from 01.01.1990
+    lat   = [lat   getRecordData(message{msgNum}, "lat")];   % deg
+    lon   = [lon   getRecordData(message{msgNum}, "lon")];   % deg
     speed = [speed getRecordData(message{msgNum}, "speed")]; % in m/s
-    dist  = [dist getRecordData(message{msgNum}, "dist")];  % distance in m
+    dist  = [dist  getRecordData(message{msgNum}, "dist")];  % distance in m
   end
 end
 % now sort all fields by timestamp
