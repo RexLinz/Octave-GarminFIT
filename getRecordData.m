@@ -9,6 +9,7 @@ if record.messageNumber != 20 % "record"
   error("expect messageNumber==20 (record)");
 end
 
+offset = 0; % if not defined
 switch name
   case "lat"
     fieldNum = 0;
@@ -18,7 +19,8 @@ switch name
     scale = 360/2^32; % to deg
   case "alt"
     fieldNum = 2;
-    scale = 1;        % not known so far
+    scale = 1/5;        % not known so far
+    offset = 500;
   case "heart"
     fieldNum = 3;
     scale = 1;        % not known so far
@@ -44,7 +46,7 @@ end
 data = [];
 for i=1:record.fields
   if record.field(i).fieldNum==fieldNum
-    data = record.field(i).data*scale;
+    data = record.field(i).data*scale-offset;
     break;
   end
 end
