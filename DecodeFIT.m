@@ -6,18 +6,24 @@ clear
 
 switch 2
   case 0 % 11.08.2022, 13:39-14:02 / SUP (Surf Markus)
-    filename = "C8BD3920.fit";
+    filename = "C8BD3920";
   case 1 % 12.08.2022, 10:32-12:07 / SUP (Surf Markus)
-    filename = "C8CA3219.fit";
+    filename = "C8CA3219";
   case 2 % 31.07.2021, 09:06-09:54 / Surf max. speed
-    filename = "7222065175_ACTIVITY.fit";
+    filename = "7222065175_ACTIVITY";
   case 3 % 06.08.2021, 14:27-16:06 / Surf 32,5 km
-    filename = "7256738576_ACTIVITY.fit";
+    filename = "7256738576_ACTIVITY";
+  case 4 % 20.08.2020, ??????? / Bike
+    filename = "5413024300_ACTIVITY";
+  case 5 % 13.02.2022, ??????? / Ski
+    filename = "8290730284_ACTIVITY";
+  case 6 % 15.01.2022, ???????? / Walk
+    filename = "8223780486_ACTIVITY";
   otherwise
     error("no data selected");
 end
 
-id = fopen(filename,"rb");
+id = fopen(["data/" filename ".fit"],"rb");
 if id<0 error("could not open input file"); end
 
 FITheader = readFITheader(id);
