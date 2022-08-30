@@ -1,6 +1,6 @@
 TODO
 move FIT read to function
-test other activities (walk, bike)?
+test other activities (walk, bike, ski)?
 
 -------------------------------------------------------
 C8CA3219
@@ -18,3 +18,15 @@ Surf Höchstgeschwindigkeit
 7256738576_ACTIVITY
 Surf 32,5 km
 06.08.2021, 14:27
+
+5413024300_ACTIVITY
+Rad
+20.08.2020
+
+8290730284_ACTIVITY
+Ski
+13.02.2022
+
+8223780486_ACTIVITY
+Gehen
+15.01.2022
