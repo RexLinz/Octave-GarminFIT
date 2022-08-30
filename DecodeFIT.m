@@ -4,7 +4,7 @@
 
 clear
 
-switch 2
+switch 6
   case 0 % 11.08.2022, 13:39-14:02 / SUP (Surf Markus)
     filename = "C8BD3920";
   case 1 % 12.08.2022, 10:32-12:07 / SUP (Surf Markus)
@@ -13,11 +13,11 @@ switch 2
     filename = "7222065175_ACTIVITY";
   case 3 % 06.08.2021, 14:27-16:06 / Surf 32,5 km
     filename = "7256738576_ACTIVITY";
-  case 4 % 20.08.2020, ??????? / Bike
+  case 4 % 20.08.2020, 08:42-12:08 / Bike
     filename = "5413024300_ACTIVITY";
-  case 5 % 13.02.2022, ??????? / Ski
+  case 5 % 13.02.2022, 14:07-16:58 / Ski
     filename = "8290730284_ACTIVITY";
-  case 6 % 15.01.2022, ???????? / Walk
+  case 6 % 15.01.2022, 14:54-15:49 / Walk
     filename = "8223780486_ACTIVITY";
   otherwise
     error("no data selected");
@@ -94,6 +94,7 @@ for r=1:length(recMessages)
     t     = [t     getRecordData(message{msgNum}, "time")];  % seconds from 01.01.1990
     lat   = [lat   getRecordData(message{msgNum}, "lat")];   % deg
     lon   = [lon   getRecordData(message{msgNum}, "lon")];   % deg
+    alt   = [alt   getRecordData(message{msgNum}, "alt")];   % m
     speed = [speed getRecordData(message{msgNum}, "speed")]; % in m/s
     dist  = [dist  getRecordData(message{msgNum}, "dist")];  % distance in m
   end
@@ -102,6 +103,7 @@ end
 [t i] = sort(t);
 lat   = lat(i);
 lon   = lon(i);
+alt   = alt(i);
 speed = speed(i);
 dist  = dist(i);
 
