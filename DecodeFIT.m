@@ -86,6 +86,7 @@ recMessages = findRecordMessages(message);
 t     = [];
 lat   = [];
 lon   = [];
+alt   = [];
 speed = [];
 dist  = [];
 for r=1:length(recMessages)
