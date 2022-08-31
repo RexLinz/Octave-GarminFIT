@@ -4,7 +4,7 @@
 
 clear
 
-switch 6
+switch 0
   case 0 % 11.08.2022, 13:39-14:02 / SUP (Surf Markus)
     filename = "C8BD3920";
   case 1 % 12.08.2022, 10:32-12:07 / SUP (Surf Markus)
@@ -25,12 +25,14 @@ end
 
 id = fopen(["data/" filename ".fit"],"rb");
 if id<0 error("could not open input file"); end
-
+fileInfo = stat(id);
+fileSize = fileInfo.size;
 FITheader = readFITheader(id);
 message = {};
 
-while !feof(id)
+%while !feof(id)
 %for r=1:35
+while ftell(id)<fileSize-2 % read to CRC
   clear record;
   record.header = fread(id, 1);
   if feof(id) break; end;
@@ -80,9 +82,12 @@ end
 
 fclose(id);
 
+% optional, useful for analyzing a file, but takes much time
+% add text message and field names
+% message = addAllNames(message);
+
 % merge messages holding respective data
 recMessages = findRecordMessages(message);
-
 t     = [];
 lat   = [];
 lon   = [];
@@ -91,20 +96,20 @@ speed = [];
 dist  = [];
 for r=1:length(recMessages)
   msgNum = recMessages(r);
-  if length(getRecordData(message{msgNum},"lat"))>0
-    t     = [t     getRecordData(message{msgNum}, "time")];  % seconds from 01.01.1990
-    lat   = [lat   getRecordData(message{msgNum}, "lat")];   % deg
-    lon   = [lon   getRecordData(message{msgNum}, "lon")];   % deg
-    alt   = [alt   getRecordData(message{msgNum}, "alt")];   % m
-    speed = [speed getRecordData(message{msgNum}, "speed")]; % in m/s
-    dist  = [dist  getRecordData(message{msgNum}, "dist")];  % distance in m
+  if length(getRecordData(message{msgNum},"position_lat"))>0
+    t     = [t     getRecordData(message{msgNum}, "timestamp")];     % seconds from 01.01.1990
+    lat   = [lat   getRecordData(message{msgNum}, "position_lat")];  % deg
+    lon   = [lon   getRecordData(message{msgNum}, "position_long")]; % deg
+    alt   = [alt   getRecordData(message{msgNum}, "altitude")];      % m
+    speed = [speed getRecordData(message{msgNum}, "speed")];         % in m/s
+    dist  = [dist  getRecordData(message{msgNum}, "distance")];      % m
   end
 end
 % now sort all fields by timestamp
 [t i] = sort(t);
 lat   = lat(i);
 lon   = lon(i);
-alt   = alt(i);
+if length(alt)==length(t) alt=alt(i); end
 speed = speed(i);
 dist  = dist(i);
 

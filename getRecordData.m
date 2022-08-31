@@ -2,43 +2,41 @@ function data = getRecordData(record, name)
 
 % function data = getRecordData(record, name)
 % read named data from activity records (messageNumber=20)
-% accepted NAME values are lat, lon, alt, heart, cad, dist, speed,time
+% accepted NAME values are field names as defined in GARMIN Fit SDK
 % output is converted to useful units, e.g. deg, m, m/s, ...
 
 if record.messageNumber != 20 % "record"
   error("expect messageNumber==20 (record)");
 end
 
-offset = 0; % if not defined
+scale  = 1; % default
+offset = 0; % default
 switch name
-  case "lat"
+  case "position_lat"
     fieldNum = 0;
     scale = 360/2^32; % to deg
-  case "lon"
+  case "position_long"
     fieldNum = 1;
     scale = 360/2^32; % to deg
-  case "alt"
+  case "altitude"
     fieldNum = 2;
     scale = 1/5;        % not known so far
     offset = 500;
-  case "heart"
+  case "heart_rate"
     fieldNum = 3;
-    scale = 1;        % not known so far
-  case "cad"
+  case "cadence"
     fieldNum = 4;
-    scale = 1;        % not known so far
-  case "dist"
+  case "distance"
     fieldNum = 5;
     scale = 0.01;     % to m
   case "speed"
     fieldNum = 6;
     scale = 0.001;    % to m/s
-  % 53 fractional cadence
+  % 53 fractional_cadence
   % 87 unknown
   % 88 unknown
-  case "time"
+  case "timestamp" % seconds from 01.01.1990
     fieldNum = 253;
-    scale = 1;        % seconds from 01.01.1990
   otherwise
     error(["field " name " unknown"]);
 end
