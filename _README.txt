@@ -1,6 +1,5 @@
 TODO
 move FIT read to function
-test other activities (walk, bike, ski)?
 
 -------------------------------------------------------
 C8CA3219

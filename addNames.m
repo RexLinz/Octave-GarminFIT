@@ -1,14 +1,15 @@
-function record = addNames(record)
+function record = addNames(record, GarminTypes, GarminMessages)
 
-% function record = addNames(record)
+% function record = addNames(record, GarminTypes, GarminMessages)
 %
 % add message and field names to record structure
 
-messageName = getMessageName(record.messageNumber);
-record.messageName = messageName;
+% record name
+record.messageName = findGarminType(GarminTypes,"mesg_num",record.messageNumber);
 
-for f = 1:record.fields
-  fieldName = getFieldName(messageName,record.field(f).fieldNum);
-  record.field(f).fieldName = fieldName;
+% field names
+for f=1:record.fields
+  record.field(f).fieldName = ...
+    findGarminMessage(GarminMessages, record.messageName, record.field(f).fieldNum);
 end
 

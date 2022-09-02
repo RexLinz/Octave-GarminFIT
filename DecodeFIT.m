@@ -3,8 +3,6 @@
 % https://developer.garmin.com/fit/protocol/
 
 clear
-GarminTypes = readGarminTypes();
-GarminMessages = readGarminMessages();
 
 switch 0
   case 0 % 11.08.2022, 13:39-14:02 / SUP (Surf Markus)
@@ -44,12 +42,6 @@ while ftell(id)<fileSize-2 % read to CRC
   elseif bitand(record.header, 64)
     msgID = bitand(record.header, 15);
     record = readFITdefinition(id, record);
-    % add names to message and fields
-    record.messageName = findGarminType(GarminTypes,"mesg_num",record.messageNumber);
-    for f=1:record.fields
-      record.field(f).fieldName = ...
-        findGarminMessage(GarminMessages, record.messageName, record.field(f).fieldNum);
-    end
     % now save as new message definition
     if !feof(id) % eof will occour while reading CRC instead
       if (length(message)>=msgID+1) && (message{msgID+1}.header!=0)
@@ -90,6 +82,7 @@ while ftell(id)<fileSize-2 % read to CRC
 end
 
 fclose(id);
+message = addAllNames(message); % add record and field names
 
 % optional, useful for analyzing a file, but takes much time
 % add text message and field names
